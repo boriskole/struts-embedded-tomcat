@@ -11,6 +11,7 @@
     <description>Example of using the Struts2 framework with an embedded Tomcat web server for easy development and deployment.</description>
 
     <properties>
+        <faker.version>1.0.2</faker.version>
         <struts.version>7.0.0-M10</struts.version>
         <tomcat.version>11.0.0</tomcat.version>
         <log4j.version>3.0.0-beta2</log4j.version>
@@ -26,6 +27,12 @@
     </repositories>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>com.github.javafaker</groupId>-->
+<!--            <artifactId>javafaker</artifactId>-->
+<!--            <version>${faker.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.apache.struts</groupId>
             <artifactId>struts2-core</artifactId>

@@ -8,7 +8,7 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="org.apache.struts2" level="debug"/>
+        <Logger name="org.apache.struts2" level="warn"/>
         <Logger name="dev.boriskole.example" level="all"/>
 
         <Root level="warn">

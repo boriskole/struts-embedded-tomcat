@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-6.0.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true" />
+
+    <!-- Struts 7.0.0+: You need to allowlist packages or classes for OGNL expression access. -->
+    <constant name="struts.allowlist.packageNames" value="dev.boriskole.example.domain,java.util"/>
+    <constant name="disallowProxyObjectAccess" value="true"/>
+
+    <package name="default" extends="struts-default" namespace="/">
+
+        <action name="" class="dev.boriskole.example.controller.PersonAction">
+            <result>person.jsp</result>
+        </action>
+
+    </package>
+
+</struts>
