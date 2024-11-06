@@ -3,12 +3,14 @@
 
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%style{%d{yyyy-MM-dd HH:mm:ss}}{cyan} %highlight{%p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue, TRACE=magenta} %style{• %C{1}}{white} » %m%n"/>
+            <PatternLayout pattern="%style{%d{yyyy-MM-dd HH:mm:ss}}{cyan} %highlight{%p}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue, TRACE=magenta} %style{%C{1}}{white} %m%n"/>
         </Console>
     </Appenders>
 
     <Loggers>
         <Logger name="org.apache.struts2" level="warn"/>
+        <Logger name="org.apache.catalina" level="warn"/>
+        <Logger name="org.apache.coyote" level="warn"/>
         <Logger name="dev.boriskole.example" level="all"/>
 
         <Root level="warn">

@@ -10,8 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class TomcatServer {
-
-    private static final Logger LOGGER = LogManager.getLogger(TomcatServer.class);
+    
+    private static final Logger logger = LogManager.getLogger(TomcatServer.class);
     private static final int TOMCAT_PORT = 8080;
     private static final String TEMPORARY_DIRECTORY = System.getProperty("java.io.tmpdir");
     private static TomcatServer instance;
@@ -28,18 +28,21 @@ public class TomcatServer {
 
     public void start() {
         try {
-            LOGGER.info("Initializing Tomcat server...");
+            // Redirect Tomcat's default logging provider to Log4j.
+            System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+
+            logger.info("Initializing Tomcat server...");
             Tomcat tomcat = new Tomcat();
 
             configureServer(tomcat);
 
             tomcat.start();
             Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(tomcat)));
-            LOGGER.info("Successfully started server on port {}.", TOMCAT_PORT);
+            logger.info("Successfully started server on port {}.", TOMCAT_PORT);
 
             tomcat.getServer().await();
         } catch (Exception exception) {
-            LOGGER.error("Something went wrong while starting server", exception);
+            logger.error("Something went wrong while starting server", exception);
         }
     }
 
@@ -49,7 +52,7 @@ public class TomcatServer {
         File tomcatBaseDir = tomcatBasePath.toFile();
 
         if (!tomcatBaseDir.exists() && !tomcatBaseDir.mkdirs()) {
-            LOGGER.error("Failed to create the base directory for Tomcat at: {}", tomcatBasePath);
+            logger.error("Failed to create the base directory for Tomcat at: {}", tomcatBasePath);
             throw new IllegalStateException("Cannot create Tomcat base directory.");
         }
 
@@ -65,10 +68,10 @@ public class TomcatServer {
             if (tomcat != null) {
                 tomcat.stop();
                 tomcat.destroy();
-                LOGGER.info("Gracefully stopped Tomcat server.");
+                logger.info("Gracefully stopped Tomcat server.");
             }
         } catch (LifecycleException e) {
-            LOGGER.error("Something went wrong while stopping server", e);
+            logger.error("Something went wrong while stopping server", e);
         }
     }
 

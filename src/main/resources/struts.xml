@@ -9,7 +9,6 @@
 
     <!-- Struts 7.0.0+: You need to allowlist packages or classes for OGNL expression access. -->
     <constant name="struts.allowlist.packageNames" value="dev.boriskole.example.domain,java.util"/>
-    <constant name="disallowProxyObjectAccess" value="true"/>
 
     <package name="default" extends="struts-default" namespace="/">
 
