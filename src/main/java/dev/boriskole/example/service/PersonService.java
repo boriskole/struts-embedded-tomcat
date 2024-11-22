@@ -17,9 +17,10 @@ public class PersonService {
         "789 Pine Rd, Ogdenville",
         "101 Maple Dr, Capital City"
     };
-    private final Random random = new Random();
 
     public Person getRandomPerson() {
+        final Random random = new Random();
+
         return new Person(
             random.nextInt(1, 100),
             NAMES[random.nextInt(NAMES.length)],
