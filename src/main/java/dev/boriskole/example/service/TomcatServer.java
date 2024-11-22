@@ -42,7 +42,6 @@ public class TomcatServer {
         stopWatch.stop();
         logger.info("Webserver started in {} seconds.", stopWatch.getTime(TimeUnit.MILLISECONDS) / 1000.0);
         tomcat.getServer().await();
-        tomcat.stop();
     }
 
     private WebResourceSet getResourceSet(WebResourceRoot resourceRoot) {

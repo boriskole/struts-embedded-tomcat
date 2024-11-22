@@ -12,9 +12,8 @@ public class PersonController {
     private List<Person> people;
 
     public String execute() {
-        throw new RuntimeException("This is a test exception.");
-//        people = personService.generatePeople(10);
-//        return "success";
+        people = personService.generatePeople(10);
+        return "success";
     }
 
     @StrutsParameter
