@@ -5,23 +5,23 @@ import java.time.Period;
 
 public class Person {
 
-    private int id;
+    private Integer id;
     private String name;
     private String address;
     private LocalDate dateOfBirth;
 
-    public Person(int id, String name, String address, LocalDate dateOfBirth) {
+    public Person(Integer id, String name, String address, LocalDate dateOfBirth) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

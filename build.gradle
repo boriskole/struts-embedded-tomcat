@@ -1,0 +1,62 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+group = 'dev.boriskole'
+version = '0.0.1'
+
+application {
+    mainClass = 'dev.boriskole.example.Starter'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri('https://repository.apache.org/content/repositories/staging/')
+    }
+}
+
+ext {
+    versions = [
+            struts : '7.0.0-M10',
+            tomcat : '11.0.1',
+            slf4j  : '2.1.0-alpha1',
+            log4j  : '3.0.0-beta2'
+    ]
+}
+
+dependencies {
+    implementation "org.apache.struts:struts2-core:${versions.struts}"
+    implementation "org.apache.tomcat.embed:tomcat-embed-core:${versions.tomcat}"
+    implementation "org.apache.tomcat.embed:tomcat-embed-jasper:${versions.tomcat}"
+    implementation "org.slf4j:slf4j-api:${versions.slf4j}"
+    implementation "org.slf4j:jul-to-slf4j:${versions.slf4j}"
+    implementation "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+    implementation "org.apache.logging.log4j:log4j-api:${versions.log4j}"
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${versions.log4j}"
+}
+
+tasks.named('shadowJar', ShadowJar) {
+    archiveBaseName.set('EmbeddedTomcatStruts')
+    archiveVersion.set('0.0.1')
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
+tasks.named('build') {
+    dependsOn shadowJar
+}
+
+tasks.named('jar') {
+    enabled = false
+}

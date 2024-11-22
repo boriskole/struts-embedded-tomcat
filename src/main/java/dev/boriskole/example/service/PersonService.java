@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 public class PersonService {
 
-    private final Random random = new Random();
     private static final String[] NAMES = {"Jack", "Donald", "Paul", "John"};
     private static final String[] ADDRESSES = {
         "123 Main St, Springfield",
@@ -18,8 +17,9 @@ public class PersonService {
         "789 Pine Rd, Ogdenville",
         "101 Maple Dr, Capital City"
     };
+    private final Random random = new Random();
 
-    private Person getRandomPerson() {
+    public Person getRandomPerson() {
         return new Person(
             random.nextInt(1, 100),
             NAMES[random.nextInt(NAMES.length)],

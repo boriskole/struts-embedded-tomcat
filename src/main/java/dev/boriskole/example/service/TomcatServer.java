@@ -1,22 +1,70 @@
 package dev.boriskole.example.service;
 
-import org.apache.catalina.LifecycleException;
+import org.apache.catalina.Context;
+import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.WebResourceSet;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.catalina.webresources.DirResourceSet;
+import org.apache.catalina.webresources.JarResourceSet;
+import org.apache.catalina.webresources.StandardRoot;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 public class TomcatServer {
-    
-    private static final Logger logger = LogManager.getLogger(TomcatServer.class);
-    private static final int TOMCAT_PORT = 8080;
-    private static final String TEMPORARY_DIRECTORY = System.getProperty("java.io.tmpdir");
+
+    private static final Logger logger = LoggerFactory.getLogger(TomcatServer.class);
+    private static final int SERVER_PORT = 8080;
+
     private static TomcatServer instance;
 
     private TomcatServer() { }
+
+    public void start() throws Exception {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        logger.info("Initializing webserver...");
+        Tomcat tomcat = new Tomcat();
+
+        tomcat.getHost().setAppBase(".");
+        tomcat.setPort(SERVER_PORT);
+        tomcat.getConnector();
+
+        Context context = tomcat.addWebapp("", ".");
+        WebResourceRoot resourceRoot = new StandardRoot(context);
+        resourceRoot.addPreResources(getResourceSet(resourceRoot));
+        context.setResources(resourceRoot);
+
+        tomcat.start();
+        stopWatch.stop();
+        logger.info("Webserver started in {} seconds.", stopWatch.getTime(TimeUnit.MILLISECONDS) / 1000.0);
+        tomcat.getServer().await();
+        tomcat.stop();
+    }
+
+    private WebResourceSet getResourceSet(WebResourceRoot resourceRoot) {
+        String sourceFile = getSourceFile();
+
+        if (sourceFile.endsWith(".jar")) {
+            logger.debug("Jar file use detected. Using JAR resource set.");
+            return new JarResourceSet(resourceRoot, "/", sourceFile, "/app");
+        } else {
+            logger.debug("Local development detected. Using directory resource set.");
+            return new DirResourceSet(resourceRoot, "/", getClass().getResource("/app").getFile(), "/");
+        }
+    }
+
+    private String getSourceFile() {
+        try {
+            return new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+        } catch (Exception e) {
+            logger.error("Error getting source file", e);
+            return null;
+        }
+    }
 
     public static TomcatServer getInstance() {
         if (instance == null) {
@@ -24,55 +72,6 @@ public class TomcatServer {
         }
 
         return instance;
-    }
-
-    public void start() {
-        try {
-            // Redirect Tomcat's default logging provider to Log4j.
-            System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
-
-            logger.info("Initializing Tomcat server...");
-            Tomcat tomcat = new Tomcat();
-
-            configureServer(tomcat);
-
-            tomcat.start();
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(tomcat)));
-            logger.info("Successfully started server on port {}.", TOMCAT_PORT);
-
-            tomcat.getServer().await();
-        } catch (Exception exception) {
-            logger.error("Something went wrong while starting server", exception);
-        }
-    }
-
-    private void configureServer(Tomcat tomcat) {
-        tomcat.setPort(TOMCAT_PORT);
-        Path tomcatBasePath = Paths.get(TEMPORARY_DIRECTORY, "tomcat-base");
-        File tomcatBaseDir = tomcatBasePath.toFile();
-
-        if (!tomcatBaseDir.exists() && !tomcatBaseDir.mkdirs()) {
-            logger.error("Failed to create the base directory for Tomcat at: {}", tomcatBasePath);
-            throw new IllegalStateException("Cannot create Tomcat base directory.");
-        }
-
-        tomcat.setBaseDir(tomcatBaseDir.getAbsolutePath());
-        tomcat.getConnector();
-
-        File webAppDirectory = new File("src/main/webapp");
-        tomcat.addWebapp("", webAppDirectory.getAbsolutePath());
-    }
-
-    private void shutdown(Tomcat tomcat) {
-        try {
-            if (tomcat != null) {
-                tomcat.stop();
-                tomcat.destroy();
-                logger.info("Gracefully stopped Tomcat server.");
-            }
-        } catch (LifecycleException e) {
-            logger.error("Something went wrong while stopping server", e);
-        }
     }
 
 }

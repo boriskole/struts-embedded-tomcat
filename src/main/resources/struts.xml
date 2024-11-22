@@ -5,14 +5,20 @@
 
 <struts>
 
-    <constant name="struts.devMode" value="true" />
+    <constant name="struts.devMode" value="true"/>
 
     <!-- Struts 7.0.0+: You need to allowlist packages or classes for OGNL expression access. -->
-    <constant name="struts.allowlist.packageNames" value="dev.boriskole.example.domain,java.util"/>
+    <constant name="struts.allowlist.packageNames" value="dev.boriskole.example.domain"/>
 
-    <package name="default" extends="struts-default" namespace="/">
+    <package name="default" extends="struts-default">
 
-        <action name="" class="dev.boriskole.example.controller.PersonAction">
+        <default-action-ref name=""/>
+
+        <action name="">
+            <result type="redirect">people</result>
+        </action>
+
+        <action name="people" class="dev.boriskole.example.controller.PersonController">
             <result>person.jsp</result>
         </action>
 
