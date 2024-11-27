@@ -16,4 +16,4 @@ out
 *.iml
 
 # Tomcat
-tomcat.
+tomcat.*
